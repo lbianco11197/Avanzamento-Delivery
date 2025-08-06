@@ -6,7 +6,7 @@ from datetime import datetime
 st.set_page_config(layout="wide")
 
 # Titolo e logo
-st.image("logo.png", width=150)
+st.image("LogoEuroirte.jpg", width=180)
 st.title("Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
 # Caricamento e pulizia dati
