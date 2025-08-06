@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import locale
+
+# Imposta la lingua italiana per i mesi
+locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')  # Se locale IT non funziona, provare 'it_IT' o commentare
 
 st.set_page_config(layout="wide", page_title="Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
@@ -8,19 +12,20 @@ st.set_page_config(layout="wide", page_title="Avanzamento Produzione Delivery - 
 st.image("LogoEuroirte.jpg", width=180)
 st.title("Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
-# Mostra data aggiornamento
-ultima_data = df["Data Esec. Lavoro"].max()
-if pd.notna(ultima_data):
-st.markdown(f"🗓️ **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
-
-# Caricamento file Excel
+# Carica file Excel
 file_path = "delivery.xlsx"
 df = pd.read_excel(file_path)
 
-# Conversione data e aggiunta colonna mese
+# Gestione date e mese in italiano
 df["Data Esec. Lavoro"] = pd.to_datetime(df["Data Esec. Lavoro"], dayfirst=True, errors="coerce")
-df["Mese"] = df["Data Esec. Lavoro"].dt.strftime("%B %Y")
-df["Reparto"] = df["Reparto"].map({500100: "OLO", 400340: "TIM"})
+df["Mese"] = df["Data Esec. Lavoro"].dt.strftime("%B %Y").str.capitalize()
+df["Giorno"] = df["Data Esec. Lavoro"].dt.strftime("%d/%m/%Y")
+df["Reparto"] = df["Codice Cliente"].map({500100: "OLO", 400340: "TIM"})
+
+# Mostra data aggiornamento subito sotto il titolo
+ultima_data = df["Data Esec. Lavoro"].max()
+if pd.notna(ultima_data):
+    st.markdown(f"🗓️ **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
 
 # Filtri interattivi
 col1, col2, col3 = st.columns(3)
@@ -36,38 +41,54 @@ if tecnico_sel != "Tutti":
 if reparto_sel != "Tutti":
     df = df[df["Reparto"] == reparto_sel]
 
-# Calcolo per ogni tecnico
-tabella = []
-for tecnico in df["Tecnico Assegnato"].dropna().unique():
-    df_tecnico = df[df["Tecnico Assegnato"] == tecnico]
-    ftth = df_tecnico[df_tecnico["Tipo Impianto"] == "FTTH"]
-    non_ftth = df_tecnico[df_tecnico["Tipo Impianto"] != "FTTH"]
+# Funzione calcolo riepilogo
+def calcola_riepilogo(df_grouped):
+    tabella = []
+    for (tecnico, chiave), df_tecnico in df_grouped:
+        ftth = df_tecnico[df_tecnico["Tipo Impianto"] == "FTTH"]
+        non_ftth = df_tecnico[df_tecnico["Tipo Impianto"] != "FTTH"]
 
-    gestiti_ftth = len(ftth)
-    espletati_ftth = len(ftth[ftth["Causale Chiusura"] == "COMPLWR"])
-    resa_ftth = (espletati_ftth / gestiti_ftth * 100) if gestiti_ftth else np.nan
+        gestiti_ftth = len(ftth)
+        espletati_ftth = len(ftth[ftth["Causale Chiusura"] == "COMPLWR"])
+        resa_ftth = (espletati_ftth / gestiti_ftth * 100) if gestiti_ftth else np.nan
 
-    gestiti_non = len(non_ftth)
-    espletati_non = len(non_ftth[non_ftth["Causale Chiusura"] == "COMPLWR"])
-    resa_non = (espletati_non / gestiti_non * 100) if gestiti_non else np.nan
+        gestiti_non = len(non_ftth)
+        espletati_non = len(non_ftth[non_ftth["Causale Chiusura"] == "COMPLWR"])
+        resa_non = (espletati_non / gestiti_non * 100) if gestiti_non else np.nan
 
-    tabella.append({
-        "Tecnico": tecnico,
-        "Impianti gestiti FTTH": gestiti_ftth,
-        "Impianti espletati FTTH": espletati_ftth,
-        "Resa FTTH": resa_ftth,
-        "Impianti gestiti ≠ FTTH": gestiti_non,
-        "Impianti espletati ≠ FTTH": espletati_non,
-        "Resa ≠ FTTH": resa_non
-    })
+        record = {
+            "Tecnico": tecnico,
+            "Impianti gestiti FTTH": gestiti_ftth,
+            "Impianti espletati FTTH": espletati_ftth,
+            "Resa FTTH": resa_ftth,
+            "Impianti gestiti ≠ FTTH": gestiti_non,
+            "Impianti espletati ≠ FTTH": espletati_non,
+            "Resa ≠ FTTH": resa_non
+        }
 
-df_out = pd.DataFrame(tabella)
+        if isinstance(chiave, str):  # Giornaliero
+            record["Giorno"] = chiave
 
-# Rimuovi FTTH se OLO
-if reparto_sel == "OLO":
-    df_out.drop(columns=["Impianti gestiti FTTH", "Impianti espletati FTTH", "Resa FTTH"], inplace=True)
+        tabella.append(record)
 
-# Colori semaforici
+    return pd.DataFrame(tabella)
+
+# Tabella mensile (per tecnico)
+df_mensile = calcola_riepilogo(df.groupby("Tecnico"))
+
+# Tabella giornaliera (per tecnico e giorno)
+df_giornaliero = calcola_riepilogo(df.groupby(["Tecnico", "Giorno"]))
+
+# Rimuove colonne FTTH se OLO
+def filtra_colonne(df_tab):
+    if reparto_sel == "OLO":
+        return df_tab.drop(columns=["Impianti gestiti FTTH", "Impianti espletati FTTH", "Resa FTTH"], errors='ignore')
+    return df_tab
+
+df_mensile = filtra_colonne(df_mensile)
+df_giornaliero = filtra_colonne(df_giornaliero)
+
+# Colorazione condizionale
 def color_resa_ftth(val):
     if pd.isna(val): return ""
     return "background-color: lightgreen" if val >= 75 else "background-color: salmon"
@@ -76,14 +97,24 @@ def color_resa_non(val):
     if pd.isna(val): return ""
     return "background-color: lightgreen" if val >= 70 else "background-color: salmon"
 
-# Visualizza tabella con formattazione
-st.dataframe(df_out.style
+# Mostra riepilogo mensile
+st.subheader("📊 Riepilogo Mensile per Tecnico")
+st.dataframe(df_mensile.style
     .format({
         "Resa FTTH": "{:.1f}%",
         "Resa ≠ FTTH": "{:.1f}%"
     }, na_rep="")
-    .applymap(color_resa_ftth, subset=["Resa FTTH"] if "Resa FTTH" in df_out.columns else [])
+    .applymap(color_resa_ftth, subset=["Resa FTTH"] if "Resa FTTH" in df_mensile.columns else [])
     .applymap(color_resa_non, subset=["Resa ≠ FTTH"])
 )
 
-
+# Mostra riepilogo giornaliero
+st.subheader("📅 Riepilogo Giornaliero per Tecnico")
+st.dataframe(df_giornaliero.style
+    .format({
+        "Resa FTTH": "{:.1f}%",
+        "Resa ≠ FTTH": "{:.1f}%"
+    }, na_rep="")
+    .applymap(color_resa_ftth, subset=["Resa FTTH"] if "Resa FTTH" in df_giornaliero.columns else [])
+    .applymap(color_resa_non, subset=["Resa ≠ FTTH"])
+)
