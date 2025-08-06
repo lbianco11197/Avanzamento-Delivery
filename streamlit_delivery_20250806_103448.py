@@ -23,7 +23,7 @@ df = pd.read_excel(file_path)
 df["Data Esec. Lavoro"] = pd.to_datetime(df["Data Esec. Lavoro"], dayfirst=True, errors="coerce")
 df["Mese"] = df["Data Esec. Lavoro"].dt.strftime("%B %Y").str.capitalize()
 df["Giorno"] = df["Data Esec. Lavoro"].dt.strftime("%d/%m/%Y")
-df["Reparto"] = df["Codice Cliente"].map({500100: "OLO", 400340: "TIM"})
+df["Reparto"] = df["Reparto"].map({500100: "OLO", 400340: "TIM"})
 
 # Mostra data aggiornamento subito sotto il titolo
 ultima_data = df["Data Esec. Lavoro"].max()
