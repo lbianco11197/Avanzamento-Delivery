@@ -15,7 +15,7 @@ def load_data():
     df = pd.read_excel("delivery.xlsx", dtype=str)
     df.rename(columns={
         "Data Esec. Lavoro": "Data",
-        "Tecnico Assegnato": "Tecnico",
+        "Tecnico": "Tecnico",
         "Tipo Impianto": "TipoImpianto",
         "Causale Chiusura": "Causale",
         "Reparto": "Reparto"
