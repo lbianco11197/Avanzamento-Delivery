@@ -17,7 +17,7 @@ df["Data Esec. Lavoro"] = pd.to_datetime(df["Data Esec. Lavoro"], dayfirst=True,
 df["Data"] = df["Data Esec. Lavoro"]
 
 # Mappatura reparto
-df["Reparto"] = df["Codice Cliente"].map({500100: "OLO", 400340: "TIM"})
+df["Reparto"] = df["Reparto"].map({500100: "OLO", 400340: "TIM"})
 
 # Selettori
 reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
