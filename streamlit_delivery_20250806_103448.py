@@ -4,7 +4,10 @@ import numpy as np
 import locale
 
 # Imposta la lingua italiana per i mesi
-locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')  # Se locale IT non funziona, provare 'it_IT' o commentare
+try:
+    locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
+except locale.Error:
+    pass  # Locale non disponibile, usa default
 
 st.set_page_config(layout="wide", page_title="Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
