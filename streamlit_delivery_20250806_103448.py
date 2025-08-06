@@ -32,7 +32,7 @@ def load_data():
     df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y", errors="coerce")
     df = df.dropna(subset=["Data"])
 
-    df["Reparto"] = df["CodCliente"].map({500100: "OLO", 400340: "TIM"})
+    df["Reparto"] = df["Reparto"].map({500100: "OLO", 400340: "TIM"})
 
     mesi_italiani = {
         1: "Gennaio", 2: "Febbraio", 3: "Marzo", 4: "Aprile",
