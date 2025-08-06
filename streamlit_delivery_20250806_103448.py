@@ -11,7 +11,7 @@ st.title("Avanzamento Produzione Delivery - Euroirte s.r.l.")
 # Mostra data aggiornamento
 ultima_data = df["Data Esec. Lavoro"].max()
 if pd.notna(ultima_data):
-    st.markdown(f"🗓️ **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
+st.markdown(f"🗓️ **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
 
 # Caricamento file Excel
 file_path = "delivery.xlsx"
