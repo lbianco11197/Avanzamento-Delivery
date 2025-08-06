@@ -8,6 +8,11 @@ st.set_page_config(layout="wide", page_title="Avanzamento Produzione Delivery - 
 st.image("LogoEuroirte.jpg", width=180)
 st.title("Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
+# Mostra data aggiornamento
+ultima_data = df["Data Esec. Lavoro"].max()
+if pd.notna(ultima_data):
+    st.markdown(f"🗓️ **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
+
 # Caricamento file Excel
 file_path = "delivery.xlsx"
 df = pd.read_excel(file_path)
@@ -81,7 +86,4 @@ st.dataframe(df_out.style
     .applymap(color_resa_non, subset=["Resa ≠ FTTH"])
 )
 
-# Mostra data aggiornamento
-ultima_data = df["Data Esec. Lavoro"].max()
-if pd.notna(ultima_data):
-    st.markdown(f"🗓️ **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
+
