@@ -82,7 +82,15 @@ ultima_data = pd.to_datetime(df["Data"], format="%d/%m/%Y").max().strftime("%d/%
 st.markdown(f"<div style='color: #6c757d; font-weight: 500;'>🗓️ Dati aggiornati al: {ultima_data}</div>", unsafe_allow_html=True)
 
 # Sidebar filtri
-mesi = ["Tutti"] + sorted(df["MeseNome"].unique().tolist(), key=lambda m: list(locale.nl_langinfo(locale.MON_1 + i).lower() for i in range(12)).index(m.lower()))
+ordine_mesi = [
+    "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+    "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+]
+
+# Filtra solo i mesi presenti nei dati
+mesi_presenti = [mese for mese in ordine_mesi if mese in df["MeseNome"].unique()]
+
+mesi = ["Tutti"] + mesi_presenti
 tecnici = ["Tutti"] + sorted(df["Tecnico"].dropna().unique())
 reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
 
