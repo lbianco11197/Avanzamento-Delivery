@@ -36,7 +36,11 @@ def load_data():
     }
     df["Mese"] = df["Data"].dt.month.map(mesi_italiani)
     return df
-
+    
+if "Tecnico" not in df.columns:
+    st.error("La colonna 'Tecnico' non è stata trovata nel file Excel. Controlla i nomi delle colonne.")
+    st.stop()
+    
 # Funzione riepilogo per tecnico
 def calcola_riepilogo(gruppo):
     def calcola_blocco(df_blocco):
