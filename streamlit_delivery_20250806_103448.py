@@ -3,6 +3,47 @@ import pandas as pd
 import numpy as np
 import locale
 
+@st.cache_data
+def load_data():
+    df = pd.read_excel("delivery.xlsx", usecols=[
+        "Data Esec. Lavoro",
+        "Tecnico Assegnato",
+        "Tipo Impianto",
+        "Causale Chiusura",
+        "Codice Cliente"
+    ])
+
+    # Rinomina colonne per uniformità
+    df.rename(columns={
+        "Data Esec. Lavoro": "Data",
+        "Tecnico Assegnato": "Tecnico",
+        "Tipo Impianto": "TipoImpianto",
+        "Causale Chiusura": "Causale",
+        "Codice Cliente": "CodCliente"
+    }, inplace=True)
+
+    # Conversione data e rimozione righe senza data
+    df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y", errors="coerce")
+    df = df.dropna(subset=["Data"])
+
+    # Creazione colonna Reparto
+    df["Reparto"] = df["CodCliente"].map({500100: "OLO", 400340: "TIM"})
+
+    # Colonna mese (in italiano, senza locale)
+    mesi_italiani = {
+        1: "Gennaio", 2: "Febbraio", 3: "Marzo", 4: "Aprile",
+        5: "Maggio", 6: "Giugno", 7: "Luglio", 8: "Agosto",
+        9: "Settembre", 10: "Ottobre", 11: "Novembre", 12: "Dicembre"
+    }
+    df["Mese"] = df["Data"].dt.month.map(mesi_italiani)
+
+    # Colonna "Ultimo aggiornamento"
+    ultima_data = df["Data"].max()
+    if pd.notna(ultima_data):
+        st.markdown(f"📅 **Dati aggiornati al: {ultima_data.strftime('%d/%m/%Y')}**")
+
+    return df
+    
 # Imposta la lingua italiana per i mesi
 try:
     locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
