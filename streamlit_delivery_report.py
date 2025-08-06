@@ -52,7 +52,6 @@ def load_data():
     return df
 
 # Funzione per calcolo riepilogo
-@st.cache_data
 def calcola_riepilogo(gruppo):
     def calcola_blocco(df_blocco):
         gestiti_ftth = df_blocco[df_blocco["TipoImpianto"] == "FTTH"].shape[0]
