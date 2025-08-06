@@ -8,7 +8,7 @@ from datetime import datetime
 def load_data():
     df = pd.read_excel("delivery.xlsx", usecols=[
         "Data Esec. Lavoro",
-        "Tecnico Assegnato",
+        "Tecnico",
         "Tipo Impianto",
         "Causale Chiusura",
         "Reparto"
