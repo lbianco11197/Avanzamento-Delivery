@@ -3,6 +3,9 @@ import pandas as pd
 from datetime import datetime
 import locale
 
+# Imposta la pagina in orizzontale
+st.set_page_config(layout="wide")
+
 # Imposta la localizzazione italiana per la visualizzazione dei mesi
 try:
     locale.setlocale(locale.LC_TIME, 'it_IT.utf8')
