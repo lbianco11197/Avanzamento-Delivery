@@ -1,0 +1,125 @@
+import streamlit as st
+import pandas as pd
+from datetime import datetime
+
+st.set_page_config(layout="wide")
+
+# --- Logo e Titolo ---
+st.image("LogoEuroirte.jpg", width=150)
+st.markdown("""
+# Avanzamento Produzione Delivery - **Euroirte s.r.l.**
+""")
+
+# --- Caricamento dati ---
+@st.cache_data(show_spinner=False)
+def load_data():
+    df = pd.read_excel("delivery.xlsx", usecols=[
+        "Data Esec. Lavoro", "Tecnico Assegnato", "Tipo Impianto", "Causale Chiusura", "Reparto"
+    ])
+    df.rename(columns={
+        "Data Esec. Lavoro": "Data",
+        "Tecnico Assegnato": "Tecnico",
+        "Tipo Impianto": "TipoImpianto",
+        "Causale Chiusura": "Causale",
+        "Reparto": "Reparto"
+    }, inplace=True)
+
+    df.dropna(subset=["Data"], inplace=True)
+    df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
+    df.dropna(subset=["Data"], inplace=True)
+    df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
+
+    df["Mese"] = pd.to_datetime(df["Data"]).dt.month
+    mesi_italiani = {
+        1: "Gennaio", 2: "Febbraio", 3: "Marzo", 4: "Aprile",
+        5: "Maggio", 6: "Giugno", 7: "Luglio", 8: "Agosto",
+        9: "Settembre", 10: "Ottobre", 11: "Novembre", 12: "Dicembre"
+    }
+    df["MeseNome"] = df["Mese"].map(mesi_italiani)
+
+    df["Reparto"] = df["Reparto"].map({400340: "TIM", 500100: "OLO"})
+
+    return df
+
+def calcola_blocco(df_blocco):
+    gestiti_ftth = df_blocco[df_blocco["TipoImpianto"] == "FTTH"].shape[0]
+    espletati_ftth = df_blocco[(df_blocco["TipoImpianto"] == "FTTH") & (df_blocco["Causale"] == "COMPLWR")].shape[0]
+    resa_ftth = (espletati_ftth / gestiti_ftth * 100) if gestiti_ftth else None
+
+    gestiti_altro = df_blocco[df_blocco["TipoImpianto"] != "FTTH"].shape[0]
+    espletati_altro = df_blocco[(df_blocco["TipoImpianto"] != "FTTH") & (df_blocco["Causale"] == "COMPLWR")].shape[0]
+    resa_altro = (espletati_altro / gestiti_altro * 100) if gestiti_altro else None
+
+    return pd.Series({
+        "Impianti gestiti FTTH": gestiti_ftth,
+        "Impianti espletati FTTH": espletati_ftth,
+        "Resa FTTH": resa_ftth,
+        "Impianti gestiti ≠ FTTH": gestiti_altro,
+        "Impianti espletati ≠ FTTH": espletati_altro,
+        "Resa ≠ FTTH": resa_altro
+    })
+
+def calcola_riepilogo(gruppo):
+    return gruppo.apply(calcola_blocco).reset_index()
+
+# --- Avvia app ---
+df = load_data()
+st.markdown(f"🗓️ **Dati aggiornati al:** {df['Data'].max().strftime('%d/%m/%Y')}")
+
+# --- Sidebar Filtri ---
+ordine_mesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+               "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
+
+mesi_presenti = [m for m in ordine_mesi if m in df["MeseNome"].unique()]
+mesi = ["Tutti"] + mesi_presenti
+tecnici = ["Tutti"] + sorted(df["Tecnico"].dropna().unique())
+reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
+giorni = ["Tutti"] + sorted(df["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
+
+col1, col2, col3, col4 = st.columns(4)
+tmese = col1.selectbox("Seleziona un mese", mesi)
+tecnico = col2.selectbox("Seleziona un tecnico", tecnici)
+reparto = col3.selectbox("Seleziona un reparto", reparti)
+giorno_sel = col4.selectbox("Seleziona un giorno", giorni)
+
+# --- Applica filtri ---
+df_filtrato = df.copy()
+if tmese != "Tutti":
+    df_filtrato = df_filtrato[df_filtrato["MeseNome"] == tmese]
+if tecnico != "Tutti":
+    df_filtrato = df_filtrato[df_filtrato["Tecnico"] == tecnico]
+if reparto != "Tutti":
+    df_filtrato = df_filtrato[df_filtrato["Reparto"] == reparto]
+
+# --- Dettaglio Giornaliero ---
+st.subheader("📅 Dettaglio Giornaliero")
+if giorno_sel != "Tutti":
+    df_det_giornaliero = df_filtrato[df_filtrato["DataStr"] == giorno_sel]
+else:
+    df_det_giornaliero = df_filtrato.copy()
+
+df_giornaliero = calcola_riepilogo(df_det_giornaliero.groupby(["Data", "Tecnico"])).reset_index()
+for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestiti ≠ FTTH", "Impianti espletati ≠ FTTH"]:
+    df_giornaliero[col] = df_giornaliero[col].astype("Int64")
+for col in ["Resa FTTH", "Resa ≠ FTTH"]:
+    df_giornaliero[col] = df_giornaliero[col].round(0).astype("Int64")
+
+st.dataframe(
+    df_giornaliero.style
+    .applymap(lambda v: "background-color: #d4f4dd" if pd.notna(v) and v >= 70 else ("background-color: #f4cccc" if pd.notna(v) and v < 70 else ""), subset=["Resa FTTH", "Resa ≠ FTTH"]),
+    use_container_width=True
+)
+
+# --- Andamento Mensile ---
+st.subheader("📅 Andamento Mensile")
+df_mensile = calcola_riepilogo(df_filtrato.groupby(["MeseNome", "Tecnico"]))
+for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestiti ≠ FTTH", "Impianti espletati ≠ FTTH"]:
+    df_mensile[col] = df_mensile[col].astype("Int64")
+for col in ["Resa FTTH", "Resa ≠ FTTH"]:
+    df_mensile[col] = df_mensile[col].round(0).astype("Int64")
+
+st.dataframe(
+    df_mensile.style
+    .applymap(lambda v: "background-color: #d4f4dd" if pd.notna(v) and v >= 70 else ("background-color: #f4cccc" if pd.notna(v) and v < 70 else ""), subset=["Resa FTTH", "Resa ≠ FTTH"]),
+    use_container_width=True
+)
