@@ -5,10 +5,8 @@ from datetime import datetime
 st.set_page_config(layout="wide")
 
 # --- Logo e Titolo ---
-st.image("LogoEuroirte.jpg", width=150)
-st.markdown("""
-📊  Avanzamento Produzione Delivery - **Euroirte s.r.l.**
-""")
+st.image("LogoEuroirte.jpg", width=180)
+st.title("📊 Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
 # --- Caricamento dati ---
 @st.cache_data(show_spinner=False)
