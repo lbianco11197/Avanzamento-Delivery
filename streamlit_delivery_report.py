@@ -72,19 +72,19 @@ ordine_mesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
 
 mesi_presenti = [m for m in ordine_mesi if m in df["MeseNome"].unique()]
 mesi = ["Tutti"] + mesi_presenti
-giorni = ["Tutti"] + sorted(df["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
-
 tecnici = ["Tutti"] + sorted(df["Tecnico"].dropna().unique())
 reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
 
-
 col1, col2, col3, col4 = st.columns(4)
 tmese = col1.selectbox("Seleziona un mese", mesi)
-giorno_sel = col4.selectbox("Seleziona un giorno", giorni)
-
 tecnico = col2.selectbox("Seleziona un tecnico", tecnici)
 reparto = col3.selectbox("Seleziona un reparto", reparti)
 
+# Filtro iniziale per selezionare i giorni del mese corrente
+df_filtrato_temp = df[df["MeseNome"] == tmese] if tmese != "Tutti" else df
+
+giorni = ["Tutti"] + sorted(df_filtrato_temp["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
+giorno_sel = col4.selectbox("Seleziona un giorno", giorni)
 
 # --- Applica filtri ---
 df_filtrato = df.copy()
@@ -96,13 +96,15 @@ if reparto != "Tutti":
     df_filtrato = df_filtrato[df_filtrato["Reparto"] == reparto]
 
 # --- Dettaglio Giornaliero ---
-st.subheader("📅 Dettaglio Giornaliero")
+st.subheader("🗕️ Dettaglio Giornaliero")
 if giorno_sel != "Tutti":
     df_det_giornaliero = df_filtrato[df_filtrato["DataStr"] == giorno_sel]
 else:
     df_det_giornaliero = df_filtrato.copy()
 
 df_giornaliero = calcola_riepilogo(df_det_giornaliero.groupby(["Data", "Tecnico"])).reset_index()
+df_giornaliero["Data"] = df_giornaliero["Data"].dt.strftime("%d/%m/%Y")
+
 for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestiti ≠ FTTH", "Impianti espletati ≠ FTTH"]:
     df_giornaliero[col] = df_giornaliero[col].astype("Int64")
 for col in ["Resa FTTH", "Resa ≠ FTTH"]:
@@ -115,7 +117,7 @@ st.dataframe(
 )
 
 # --- Andamento Mensile ---
-st.subheader("📅 Andamento Mensile")
+st.subheader("🗕️ Andamento Mensile")
 df_mensile = calcola_riepilogo(df_filtrato.groupby(["MeseNome", "Tecnico"]))
 for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestiti ≠ FTTH", "Impianti espletati ≠ FTTH"]:
     df_mensile[col] = df_mensile[col].astype("Int64")
