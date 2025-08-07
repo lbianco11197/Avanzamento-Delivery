@@ -123,14 +123,19 @@ if giorno_giornaliero != "Tutti":
 
 df_giornaliero = calcola_riepilogo(df_det_giornaliero.groupby(["Data", "Tecnico"])).reset_index()
 
-st.dataframe(df_giornaliero.style.format({
-    "Resa FTTH": "{}%",
-    "Resa ≠ FTTH": "{}%",
-    "Impianti gestiti FTTH": "{:.0f}",
-    "Impianti espletati FTTH": "{:.0f}",
-    "Impianti gestiti ≠ FTTH": "{:.0f}",
-    "Impianti espletati ≠ FTTH": "{:.0f}"
-}).applymap(color_map, subset=["Resa FTTH", "Resa ≠ FTTH"])
+st.dataframe(
+    df_giornaliero.style
+    .format({
+        "Resa FTTH": "{:.0f}%",
+        "Resa ≠ FTTH": "{:.0f}%"
+    })
+    .applymap(
+        lambda v: "background-color: #d4f4dd" if pd.notna(v) and v >= 70
+        else ("background-color: #f4cccc" if pd.notna(v) and v < 70 else ""),
+        subset=["Resa FTTH", "Resa ≠ FTTH"]
+    ),
+    use_container_width=True
+)
 
 # --- Andamento Mensile ---
 st.subheader("📅 Andamento Mensile")
