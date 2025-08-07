@@ -96,7 +96,7 @@ if reparto != "Tutti":
     df_filtrato = df_filtrato[df_filtrato["Reparto"] == reparto]
 
 # --- Dettaglio Giornaliero ---
-st.subheader("🗕️ Dettaglio Giornaliero")
+st.subheader("📆 Dettaglio Giornaliero")
 if giorno_sel != "Tutti":
     df_det_giornaliero = df_filtrato[df_filtrato["DataStr"] == giorno_sel]
 else:
@@ -117,7 +117,7 @@ st.dataframe(
 )
 
 # --- Andamento Mensile ---
-st.subheader("🗕️ Andamento Mensile")
+st.subheader("📆 Riepilogo Mensile per Tecnico")
 df_mensile = calcola_riepilogo(df_filtrato.groupby(["MeseNome", "Tecnico"]))
 for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestiti ≠ FTTH", "Impianti espletati ≠ FTTH"]:
     df_mensile[col] = df_mensile[col].astype("Int64")
