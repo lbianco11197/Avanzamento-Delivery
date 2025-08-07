@@ -19,7 +19,7 @@ st.image("LogoEuroirte.jpg", width=150)
 st.title("Avanzamento Produzione Delivery - Euroirte s.r.l.")
 
 # Funzione per caricare i dati
-@st.cache_data
+@st.cache_data(ttl=0)
 def load_data():
     df = pd.read_excel("delivery.xlsx", usecols=[
         "Data Esec. Lavoro",
