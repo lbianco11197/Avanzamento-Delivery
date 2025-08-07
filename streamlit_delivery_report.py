@@ -117,7 +117,7 @@ for col in ["Resa FTTH", "Resa ≠ FTTH"]:
 
 st.dataframe(
     df_giornaliero.style
-    .applymap(lambda v: "background-color: #ccffcc if pd.notna(v) and v >= 70 else ("background-color: #ff9999 if pd.notna(v) and v < 70 else ""), subset=["Resa FTTH", "Resa ≠ FTTH"]),
+    .applymap(lambda v: "background-color: #ccffcc if pd.notna(v) and v >= 70 else ("background-color: #ff9999 if pd.notna(v) and v < 70 else "), subset=["Resa FTTH", "Resa ≠ FTTH"]),
     use_container_width=True
 ))
 
