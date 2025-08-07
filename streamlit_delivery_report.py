@@ -91,14 +91,24 @@ ordine_mesi = [
 
 # Filtra solo i mesi presenti nei dati
 mesi_presenti = [mese for mese in ordine_mesi if mese in df["MeseNome"].unique()]
-
 mesi = ["Tutti"] + mesi_presenti
 tecnici = ["Tutti"] + sorted(df["Tecnico"].dropna().unique())
 reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
 
+# Colonne filtro
+col1, col2, col3, col4 = st.columns(4)
 tmese = st.selectbox("Seleziona un mese", mesi)
 tecnico = st.selectbox("Seleziona un tecnico", tecnici)
 reparto = st.selectbox("Seleziona un reparto", reparti)
+
+# Giorni disponibili in base al mese selezionato
+if tmese == "Tutti":
+    giorni_disp = sorted(df["DataStr"].dropna().unique().tolist())
+else:
+    giorni_disp = sorted(df[df["MeseNome"] == tmese]["DataStr"].dropna().unique().tolist())
+
+giorni = ["Tutti"] + giorni_disp
+giorno_sel = col4.selectbox("Seleziona un giorno", giorni)
 
 # Applica i filtri se selezionati
 df_filtrato = df.copy()
