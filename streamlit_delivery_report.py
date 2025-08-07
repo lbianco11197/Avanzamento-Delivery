@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 st.sidebar.markdown("## 🔒 Area Amministratore")
 password = st.sidebar.text_input("Inserisci la password per caricare il file", type="password")
 
-if password == "admin123":  # Cambia questa password come preferisci
+if password == "Euroirte111927":  # Cambia questa password come preferisci
     uploaded_file = st.sidebar.file_uploader("📂 Carica nuovo file 'delivery.xlsx'", type=["xlsx"])
     if uploaded_file:
         with open("delivery.xlsx", "wb") as f:
