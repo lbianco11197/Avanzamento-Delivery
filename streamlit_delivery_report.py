@@ -4,6 +4,19 @@ from datetime import datetime
 
 st.set_page_config(layout="wide")
 
+# --- Autenticazione per upload file Excel ---
+st.sidebar.markdown("## 🔒 Area Amministratore")
+password = st.sidebar.text_input("Inserisci la password per caricare il file", type="password")
+
+if password == "admin123":  # Cambia questa password come preferisci
+    uploaded_file = st.sidebar.file_uploader("📂 Carica nuovo file 'delivery.xlsx'", type=["xlsx"])
+    if uploaded_file:
+        with open("delivery.xlsx", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.sidebar.success("✅ File aggiornato correttamente!")
+else:
+    st.sidebar.info("Solo gli utenti autorizzati possono aggiornare i dati.")
+
 # --- Logo e Titolo ---
 st.image("LogoEuroirte.jpg", width=180)
 st.title("📊 Avanzamento Produzione Delivery - Euroirte s.r.l.")
