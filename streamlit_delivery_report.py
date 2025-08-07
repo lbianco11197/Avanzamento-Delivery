@@ -14,11 +14,11 @@ st.markdown("""
 @st.cache_data(show_spinner=False)
 def load_data():
     df = pd.read_excel("delivery.xlsx", usecols=[
-        "Data Esec. Lavoro", "Tecnico Assegnato", "Tipo Impianto", "Causale Chiusura", "Reparto"
+        "Data Esec. Lavoro", "Tecnico", "Tipo Impianto", "Causale Chiusura", "Reparto"
     ])
     df.rename(columns={
         "Data Esec. Lavoro": "Data",
-        "Tecnico Assegnato": "Tecnico",
+        "Tecnico": "Tecnico",
         "Tipo Impianto": "TipoImpianto",
         "Causale Chiusura": "Causale",
         "Reparto": "Reparto"
