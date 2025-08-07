@@ -78,7 +78,7 @@ reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
 col1, col2, col3, col4 = st.columns(4)
 tmese = col1.selectbox("📆 Seleziona un mese:", mesi)
 tecnico = col2.selectbox("🧑‍🔧 Seleziona un tecnico:", tecnici)
-reparto = col3.selectbox("Seleziona un reparto:", reparti)
+reparto = col3.selectbox("🧑‍🔧 Seleziona un reparto:", reparti)
 
 # Filtro iniziale per selezionare i giorni del mese corrente
 df_filtrato_temp = df[df["MeseNome"] == tmese] if tmese != "Tutti" else df
