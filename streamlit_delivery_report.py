@@ -72,9 +72,11 @@ ordine_mesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
 
 mesi_presenti = [m for m in ordine_mesi if m in df["MeseNome"].unique()]
 mesi = ["Tutti"] + mesi_presenti
+giorni = ["Tutti"] + sorted(df["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
+
 tecnici = ["Tutti"] + sorted(df["Tecnico"].dropna().unique())
 reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
-giorni = ["Tutti"] + sorted(df["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
+
 
 col1, col2, col3, col4 = st.columns(4)
 tmese = col1.selectbox("Seleziona un mese", mesi)
