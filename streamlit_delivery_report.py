@@ -75,10 +75,19 @@ mesi = ["Tutti"] + mesi_presenti
 tecnici = ["Tutti"] + sorted(df["Tecnico"].dropna().unique())
 reparti = ["Tutti"] + sorted(df["Reparto"].dropna().unique())
 
-col1, col2, col3, col4 = st.columns(4)
-tmese = col1.selectbox("📆 Seleziona un mese:", mesi)
-tecnico = col2.selectbox("🧑‍🔧 Seleziona un tecnico:", tecnici)
-reparto = col3.selectbox("🧑‍🔧 Seleziona un reparto:", reparti)
+# Layout due righe di colonne: riga 1 mese e giorno, riga 2 reparto e tecnico
+riga1_col1, riga1_col2 = st.columns(2)
+riga2_col1, riga2_col2 = st.columns(2)
+
+tmese = riga1_col1.selectbox("📆 Seleziona un mese", mesi)
+df_filtrato_temp = df[df["MeseNome"] == tmese] if tmese != "Tutti" else df
+
+giorni = ["Tutti"] + sorted(df_filtrato_temp["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
+giorno_sel = riga1_col2.selectbox("Seleziona un giorno", giorni)
+
+reparto = riga2_col1.selectbox("🧑‍🔧 Seleziona un reparto", reparti)
+tecnico = riga2_col2.selectbox("🧑‍🔧 Seleziona un tecnico", tecnici)
+
 
 # Filtro iniziale per selezionare i giorni del mese corrente
 df_filtrato_temp = df[df["MeseNome"] == tmese] if tmese != "Tutti" else df
