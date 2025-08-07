@@ -92,8 +92,6 @@ tecnico = riga2_col2.selectbox("🧑‍🔧 Seleziona un tecnico", tecnici)
 # Filtro iniziale per selezionare i giorni del mese corrente
 df_filtrato_temp = df[df["MeseNome"] == tmese] if tmese != "Tutti" else df
 
-#giorni = ["Tutti"] + sorted(df_filtrato_temp["DataStr"].dropna().unique(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
-#giorno_sel = col4.selectbox("📆 Seleziona un giorno:", giorni)
 
 # --- Applica filtri ---
 df_filtrato = df.copy()
