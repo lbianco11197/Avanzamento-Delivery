@@ -109,6 +109,29 @@ if tecnico != "Tutti":
 if reparto != "Tutti":
     df_filtrato = df_filtrato[df_filtrato["Reparto"] == reparto]
 
+# --- Dettaglio Giornaliero ---
+st.subheader("📅 Dettaglio Giornaliero")
+
+# Filtro per mese e data
+mese_giornaliero = st.selectbox("Seleziona un mese per il dettaglio giornaliero", mesi_presenti)
+giorni_disponibili = sorted(df[df["MeseNome"] == mese_giornaliero]["Data"].unique().tolist())
+giorno_giornaliero = st.selectbox("Seleziona un giorno", ["Tutti"] + giorni_disponibili)
+
+df_det_giornaliero = df[df["MeseNome"] == mese_giornaliero]
+if giorno_giornaliero != "Tutti":
+    df_det_giornaliero = df_det_giornaliero[df_det_giornaliero["Data"] == giorno_giornaliero]
+
+df_giornaliero = calcola_riepilogo(df_det_giornaliero.groupby(["Data", "Tecnico"])).reset_index()
+
+st.dataframe(df_giornaliero.style.format({
+    "Resa FTTH": "{}%",
+    "Resa ≠ FTTH": "{}%",
+    "Impianti gestiti FTTH": "{:.0f}",
+    "Impianti espletati FTTH": "{:.0f}",
+    "Impianti gestiti ≠ FTTH": "{:.0f}",
+    "Impianti espletati ≠ FTTH": "{:.0f}"
+}).applymap(color_map, subset=["Resa FTTH", "Resa ≠ FTTH"])
+
 # --- Andamento Mensile ---
 st.subheader("📅 Andamento Mensile")
 df_mensile = calcola_riepilogo(df_filtrato.groupby(["MeseNome", "Tecnico"])).reset_index()
@@ -128,20 +151,4 @@ st.dataframe(df_mensile.style.format({
     "Impianti espletati ≠ FTTH": "{:.0f}"
 }).applymap(color_map, subset=["Resa FTTH", "Resa ≠ FTTH"]))
 
-# --- Dettaglio Giornaliero ---
-st.subheader("📅 Dettaglio Giornaliero")
-data_filtro = st.selectbox("Seleziona una data (opzionale)", ["Tutte"] + sorted(df_filtrato["Data"].unique().tolist()))
 
-if data_filtro != "Tutte":
-    df_filtrato = df_filtrato[df_filtrato["Data"] == data_filtro]
-
-df_giornaliero = calcola_riepilogo(df_filtrato.groupby(["Data", "Tecnico"])).reset_index()
-
-st.dataframe(df_giornaliero.style.format({
-    "Resa FTTH": "{}%",
-    "Resa ≠ FTTH": "{}%",
-    "Impianti gestiti FTTH": "{:.0f}",
-    "Impianti espletati FTTH": "{:.0f}",
-    "Impianti gestiti ≠ FTTH": "{:.0f}",
-    "Impianti espletati ≠ FTTH": "{:.0f}"
-}).applymap(color_map, subset=["Resa FTTH", "Resa ≠ FTTH"]))
