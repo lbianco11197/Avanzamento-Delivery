@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")
 # --- Logo e Titolo ---
 st.image("LogoEuroirte.jpg", width=150)
 st.markdown("""
-# Avanzamento Produzione Delivery - **Euroirte s.r.l.**
+#📊  Avanzamento Produzione Delivery - **Euroirte s.r.l.**
 """)
 
 # --- Caricamento dati ---
