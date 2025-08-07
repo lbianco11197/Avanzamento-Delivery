@@ -39,8 +39,8 @@ def load_data():
 
     df.dropna(subset=["Data"], inplace=True)
     df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
-    df.dropna(subset=["Data"], inplace=True)
-    df["Data"] = df["Data"].dt.strftime("%d/%m/%Y")
+    df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
+    
 
     df["Mese"] = pd.to_datetime(df["Data"], format="%d/%m/%Y").dt.month
     mesi_italiani = {
