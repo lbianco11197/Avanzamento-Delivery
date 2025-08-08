@@ -70,7 +70,7 @@ st.link_button("🏠 Torna alla Home", url="https://homeeuroirte.streamlit.app/"
 
 def load_data(file_updated_time):
     df = pd.read_excel("delivery.xlsx", usecols=[
-        "Data Esec. Lavoro", "Tecnico", "Tipo Impianto", "Causale Chiusura", "Reparto"
+        "Data Esec. Lavoro", "Tecnico Assegnato", "Tipo Impianto", "Causale Chiusura", "Reparto"
     ])
     df.rename(columns={
         "Data Esec. Lavoro": "Data",
