@@ -3,6 +3,9 @@ import pandas as pd
 from datetime import datetime
 import os
 
+def get_file_timestamp(file_path):
+    return os.path.getmtime(file_path)
+    
 st.set_page_config(layout="wide")
 
 # Imposta sfondo bianco e testo nero
@@ -69,8 +72,8 @@ st.link_button("🏠 Torna alla Home", url="https://homeeuroirte.streamlit.app/"
 @st.cache_data(show_spinner=False)
 
 @st.cache_data(ttl=0)
-def load_data(file_updated_time):
-    df = pd.read_excel("delivery.xlsx", sheet_name=0, usecols=[
+def load_data(file_path, file_updated_time):
+    df = pd.read_excel(file_path, sheet_name=0, usecols=[
         "Data Esec. Lavoro", "Tecnico Assegnato", "Tipo Impianto", "Causale Chiusura", "Reparto"
     ])
     df.rename(columns={
@@ -122,7 +125,9 @@ def calcola_riepilogo(gruppo):
 # --- Avvia app ---
 file_path = "delivery.xlsx"
 file_updated_time = os.path.getmtime(file_path)
-df = load_data(file_updated_time)
+file_path = "delivery.xlsx"
+file_updated_time = get_file_timestamp(file_path)
+df = load_data(file_path, file_updated_time)
 st.markdown(f"🗓️ **Dati aggiornati al:** {df['Data'].max().strftime('%d/%m/%Y')}")
 
 # --- Sidebar Filtri ---
