@@ -54,9 +54,15 @@ st.markdown("""
 #else:
 #    st.sidebar.info("Solo gli utenti autorizzati possono aggiornare i dati.")
 
-# --- Logo e Titolo ---
-st.image("LogoEuroirte.jpg", width=180)
+# --- Titolo ---
 st.title("📊 Avanzamento Produzione Delivery - Euroirte s.r.l.")
+
+# Intestazione con logo e bottone
+# Logo in alto
+st.image("LogoEuroirte.jpg", width=180)
+
+# Bottone sotto il logo
+st.link_button("🏠 Torna alla Home", url="https://homeeuroirte.streamlit.app/")
 
 # --- Caricamento dati ---
 @st.cache_data(show_spinner=False)
