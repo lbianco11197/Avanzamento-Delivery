@@ -66,7 +66,7 @@ st.link_button("🏠 Torna alla Home", url="https://homeeuroirte.streamlit.app/"
 
 # --- Caricamento dati ---
 @st.cache_data(show_spinner=False)
-def load_data(file_updated_time):
+def load_data():
     df = pd.read_excel("delivery.xlsx", usecols=[
         "Data Esec. Lavoro", "Tecnico", "Tipo Impianto", "Causale Chiusura", "Reparto"
     ])
