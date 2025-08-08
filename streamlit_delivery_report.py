@@ -117,7 +117,7 @@ def calcola_riepilogo(gruppo):
     return gruppo.apply(calcola_blocco).reset_index()
 
 # --- Avvia app ---
-df = load_data()
+df = load_data(file_updated_time)
 st.markdown(f"🗓️ **Dati aggiornati al:** {df['Data'].max().strftime('%d/%m/%Y')}")
 
 # --- Sidebar Filtri ---
