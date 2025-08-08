@@ -74,7 +74,7 @@ def load_data(file_updated_time):
     ])
     df.rename(columns={
         "Data Esec. Lavoro": "Data",
-        "Tecnico": "Tecnico",
+        "Tecnico Assegnato": "Tecnico",
         "Tipo Impianto": "TipoImpianto",
         "Causale Chiusura": "Causale",
         "Reparto": "Reparto"
