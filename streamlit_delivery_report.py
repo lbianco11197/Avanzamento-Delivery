@@ -5,27 +5,41 @@ from datetime import datetime
 st.set_page_config(layout="wide")
 
 # Imposta sfondo bianco e testo nero
-st.markdown(
-    """
+st.markdown("""
     <style>
-        html, body, [data-testid="stApp"] {
-            background-color: white !important;
-            color: black !important;
+    /* Sfondo e testo di base */
+    html, body, [data-testid="stApp"] {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    /* RADIO BUTTON - Forza etichette nere */
+    .stRadio div[role="radiogroup"] label span {
+        color: black !important;
+        font-weight: 500 !important;
+    }
+
+    /* RADIO BUTTON - Mobile layout più leggibile */
+    @media only screen and (max-width: 768px) {
+        .stRadio > div {
+            flex-direction: row !important;
+            justify-content: space-evenly;
+            gap: 10px;
         }
-        .stTextInput input, .stPasswordInput input, .stSelectbox, .stFileUploader, .stButton {
-            color: black !important;
-            background-color: white !important;
+        .stRadio div[role="radiogroup"] label span {
+            font-size: 15px !important;
         }
-        .stMarkdown, .stDataFrame, .stAlert {
-            color: black !important;
-        }
-        .css-1d391kg {  /* Titolo */
-            color: black !important;
-        }
+    }
+
+    /* Pulsanti */
+    .stButton > button {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important;
+        border-radius: 6px !important;
+    }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
 # --- Autenticazione per upload file Excel ---
 #st.sidebar.markdown("## 🔒 Area Amministratore")
