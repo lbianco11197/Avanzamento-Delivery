@@ -66,7 +66,7 @@ st.link_button("🏠 Torna alla Home", url="https://homeeuroirte.streamlit.app/"
 
 # --- Caricamento dati ---
 @st.cache_data(show_spinner=False)
-def load_data():
+def load_data(file_updated_time):
     df = pd.read_excel("delivery.xlsx", usecols=[
         "Data Esec. Lavoro", "Tecnico", "Tipo Impianto", "Causale Chiusura", "Reparto"
     ])
@@ -117,7 +117,9 @@ def calcola_riepilogo(gruppo):
     return gruppo.apply(calcola_blocco).reset_index()
 
 # --- Avvia app ---
-df = load_data()
+from pathlib import Path
+file_updated_time = Path("delivery.xlsx").stat().st_mtime
+df = load_data(file_updated_time)
 st.markdown(f"🗓️ **Dati aggiornati al:** {df['Data'].max().strftime('%d/%m/%Y')}")
 
 # --- Sidebar Filtri ---
