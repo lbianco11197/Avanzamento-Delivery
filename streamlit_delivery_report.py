@@ -3,7 +3,8 @@ import pandas as pd
 from datetime import datetime
 import os
 
-return os.path.getmtime(file_path)
+def get_file_updated_time(file_path):
+    return os.path.getmtime(file_path)
     
 st.set_page_config(layout="wide")
 
