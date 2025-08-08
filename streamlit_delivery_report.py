@@ -164,7 +164,7 @@ if giorno_sel != "Tutti":
 else:
     df_det_giornaliero = df_filtrato.copy()
 
-df_giornaliero = calcola_riepilogo(df_det_giornaliero.groupby(["Data", "Tecnico"])).reset_index()
+df_giornaliero = calcola_riepilogo(df_det_giornaliero.groupby(["Data", "Tecnico"])).reset_index(drop=True)
 df_giornaliero["Data"] = df_giornaliero["Data"].dt.strftime("%d/%m/%Y")
 
 for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestiti ≠ FTTH", "Impianti espletati ≠ FTTH"]:
