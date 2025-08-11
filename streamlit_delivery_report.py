@@ -172,12 +172,19 @@ for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestit
 for col in ["Resa FTTH", "Resa ≠ FTTH"]:
     df_giornaliero[col] = df_giornaliero[col].round(0).astype("Int64")
 
-st.dataframe(
-    df_giornaliero.style
-    .applymap(lambda v: "background-color: #ccffcc" if pd.notna(v) and v >= 70 else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""), subset=["Resa FTTH", "Resa ≠ FTTH"])
-    .hide(axis="index"),
-    use_container_width=True
+styled_giornaliero = df_giornaliero.style.applymap(
+    lambda v: "background-color: #ccffcc" if pd.notna(v) and v >= 70 
+    else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""), 
+    subset=["Resa FTTH", "Resa ≠ FTTH"]
 )
+
+# Aggiungi simbolo % solo alla visualizzazione
+styled_giornaliero = styled_giornaliero.format({
+    "Resa FTTH": "{:.0f}%",
+    "Resa ≠ FTTH": "{:.0f}%"
+})
+
+st.dataframe(styled_giornaliero.hide(axis="index"), use_container_width=True)
 
 # --- Andamento Mensile ---
 st.subheader("📆 Riepilogo Mensile per Tecnico")
@@ -187,8 +194,16 @@ for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestit
 for col in ["Resa FTTH", "Resa ≠ FTTH"]:
     df_mensile[col] = df_mensile[col].round(0).astype("Int64")
 
-st.dataframe(
-    df_mensile.style
-    .applymap(lambda v: "background-color: #ccffcc" if pd.notna(v) and v >= 70 else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""), subset=["Resa FTTH", "Resa ≠ FTTH"]),
-    use_container_width=True
+styled_mensile = df_mensile.style.applymap(
+    lambda v: "background-color: #ccffcc" if pd.notna(v) and v >= 70 
+    else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""), 
+    subset=["Resa FTTH", "Resa ≠ FTTH"]
 )
+
+# Aggiungi simbolo % solo alla visualizzazione
+styled_mensile = styled_mensile.format({
+    "Resa FTTH": "{:.0f}%",
+    "Resa ≠ FTTH": "{:.0f}%"
+})
+
+st.dataframe(styled_mensile, use_container_width=True)
