@@ -79,7 +79,11 @@ def load_data():
     }, inplace=True)
 
     df.dropna(subset=["Data"], inplace=True)
-    df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
+    df["Data"] = pd.to_datetime(df["Data"], dayfirst=True, errors="coerce")
+    # AGGIUNGI QUESTE DUE RIGHE SUBITO SOTTO
+    st.write("Debug: Anteprima delle date convertite")
+    st.dataframe(df[['Data Esec. Lavoro', 'Data']].head(10))
+
     df.dropna(subset=["Data"], inplace=True)
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
 
