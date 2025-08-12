@@ -79,7 +79,7 @@ def load_data():
     }, inplace=True)
 
     df.dropna(subset=["Data"], inplace=True)
-    df["Data"] = pd.to_datetime(df["Data Esec. Lavoro"], dayfirst=True, errors='coerce').dt.date
+    df["Data"] = pd.to_datetime(df["Data Esec. Lavoro"], errors='coerce').dt.date
     df.dropna(subset=["Data"], inplace=True)
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
 
