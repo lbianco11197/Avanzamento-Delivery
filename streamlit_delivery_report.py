@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import os
+st.cache_data.clear()
 
 st.set_page_config(layout="wide")
 
