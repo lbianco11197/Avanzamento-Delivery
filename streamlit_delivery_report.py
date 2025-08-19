@@ -65,6 +65,19 @@ st.image("LogoEuroirte.jpg", width=180)
 # Bottone sotto il logo
 st.link_button("🏠 Torna alla Home", url="https://homeeuroirte.streamlit.app/")
 
+def pulisci_tecnici(df):
+    """Rimuove righe senza tecnico e normalizza i nomi"""
+    df["Tecnico"] = (
+        df["Tecnico"]
+        .astype(str)
+        .str.strip()
+        .str.replace(r"\s+", " ", regex=True)
+        .str.upper()
+    )
+    # Elimina righe vuote o 'NAN'
+    df = df[df["Tecnico"].notna() & (df["Tecnico"] != "") & (df["Tecnico"] != "NAN")]
+    return df
+
 # --- Caricamento dati ---
 def load_data():
     df = pd.read_excel("delivery.xlsx", usecols=[
@@ -82,6 +95,7 @@ def load_data():
     df["Data"] = pd.to_datetime(df["Data"], dayfirst=True, errors="coerce")
     df.dropna(subset=["Data"], inplace=True)
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
+    df = pulisci_tecnici(df)
 
     
      # Normalizza i nomi tecnici:
