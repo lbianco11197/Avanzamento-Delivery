@@ -83,8 +83,15 @@ def load_data():
     df.dropna(subset=["Data"], inplace=True)
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
 
-    # 👇 Nome Tecnico in maiuscolo
-    df["Tecnico"] = df["Tecnico"].astype(str).str.upper()
+    
+     # Normalizza i nomi tecnici:
+    df["Tecnico"] = (
+        df["Tecnico"]
+        .astype(str)                      # forza a stringa
+        .str.strip()                      # rimuove spazi iniziali/finali
+        .str.replace(r"\s+", " ", regex=True)  # rimuove spazi doppi
+        .str.upper()                      # tutto maiuscolo
+    )
 
     df["Mese"] = pd.to_datetime(df["Data"]).dt.month
     mesi_italiani = {
