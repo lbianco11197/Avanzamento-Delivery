@@ -83,6 +83,9 @@ def load_data():
     df.dropna(subset=["Data"], inplace=True)
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
 
+    # 👇 Nome Tecnico in maiuscolo
+    df["Tecnico"] = df["Tecnico"].astype(str).str.upper()
+
     df["Mese"] = pd.to_datetime(df["Data"]).dt.month
     mesi_italiani = {
         1: "Gennaio", 2: "Febbraio", 3: "Marzo", 4: "Aprile",
