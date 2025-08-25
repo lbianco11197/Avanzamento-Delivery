@@ -2,58 +2,49 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import os
+import base64
+from pathlib import Path
 
-st.set_page_config(layout="wide")
-
-# Imposta sfondo bianco e testo nero
-st.markdown("""
+def set_page_background(image_path: str):
+    """Imposta un'immagine di sfondo full-screen come background dell'app Streamlit."""
+    p = Path(image_path)
+    if not p.exists():
+        st.warning(f"Background non trovato: {image_path}")
+        return
+    encoded = base64.b64encode(p.read_bytes()).decode()
+    css = f"""
     <style>
-    /* Sfondo e testo di base */
-    html, body, [data-testid="stApp"] {
-        background-color: white !important;
-        color: black !important;
-    }
-
-    /* RADIO BUTTON - Forza etichette nere */
-    .stRadio div[role="radiogroup"] label span {
-        color: black !important;
-        font-weight: 500 !important;
-    }
-
-    /* RADIO BUTTON - Mobile layout più leggibile */
-    @media only screen and (max-width: 768px) {
-        .stRadio > div {
-            flex-direction: row !important;
-            justify-content: space-evenly;
-            gap: 10px;
-        }
-        .stRadio div[role="radiogroup"] label span {
-            font-size: 15px !important;
-        }
-    }
-
-    /* Pulsanti */
-    .stButton > button {
-        background-color: white !important;
-        color: black !important;
-        border: 1px solid #ccc !important;
-        border-radius: 6px !important;
-    }
+    [data-testid="stAppViewContainer"] {{
+        background: url("data:image/png;base64,{encoded}") center/cover no-repeat fixed;
+    }}
+    [data-testid="stHeader"], [data-testid="stSidebar"] {{
+        background-color: rgba(255,255,255,0.0) !important;
+    }}
+    html, body, [data-testid="stApp"] {{
+        color: #0b1320 !important;
+    }}
+    .stDataFrame, .stTable, .stSelectbox div[data-baseweb="select"],
+    .stTextInput, .stNumberInput, .stDateInput, .stMultiSelect,
+    .stRadio, .stCheckbox, .stSlider, .stFileUploader, .stTextArea {{
+        background-color: rgba(255,255,255,0.88) !important;
+        border-radius: 10px;
+        backdrop-filter: blur(0.5px);
+    }}
+    .stDataFrame table, .stDataFrame th, .stDataFrame td {{
+        color: #0b1320 !important;
+        background-color: rgba(255,255,255,0.0) !important;
+    }}
+    .stButton > button, .stDownloadButton > button, .stLinkButton > a {{
+        background-color: #ffffff !important;
+        color: #0b1320 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px;
+    }}
     </style>
-""", unsafe_allow_html=True)
-
-# --- Autenticazione per upload file Excel ---
-#st.sidebar.markdown("## 🔒 Area Amministratore")
-#password = st.sidebar.text_input("Inserisci la password per caricare il file", type="password")
-#
-#if password == "Euroirte111927":  # Cambia questa password come preferisci
-#    uploaded_file = st.sidebar.file_uploader("📂 Carica nuovo file 'delivery.xlsx'", type=["xlsx"])
-#    if uploaded_file:
-#        with open("delivery.xlsx", "wb") as f:
-#            f.write(uploaded_file.getbuffer())
-#        st.sidebar.success("✅ File aggiornato correttamente!")
-#else:
-#    st.sidebar.info("Solo gli utenti autorizzati possono aggiornare i dati.")
+    """
+    st.markdown(css, unsafe_allow_html=True)
+st.set_page_config(layout="wide")
+set_page_background("bg_fibra_white_glow.png")  # 👈 nome del file PNG che vuoi usare come sfondo
 
 # --- Titolo ---
 st.title("📊 Avanzamento Produzione Delivery - Euroirte s.r.l.")
