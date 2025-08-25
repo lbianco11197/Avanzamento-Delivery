@@ -44,7 +44,7 @@ def set_page_background(image_path: str):
     """
     st.markdown(css, unsafe_allow_html=True)
 st.set_page_config(layout="wide")
-set_page_background("bg_fibra_white_glow.png")  # 👈 nome del file PNG che vuoi usare come sfondo
+set_page_background("sfondo.png")  # 👈 nome del file PNG che vuoi usare come sfondo
 
 # --- Titolo ---
 st.title("📊 Avanzamento Produzione Delivery - Euroirte s.r.l.")
