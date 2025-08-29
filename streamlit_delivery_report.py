@@ -21,7 +21,7 @@ def set_page_background(image_path: str):
         background-color: rgba(255,255,255,0.0) !important;
     }}
     html, body, [data-testid="stApp"] {{
-        color: #0b1320 !important;
+        color: #ddd !important;
     }}
     .stDataFrame, .stTable, .stSelectbox div[data-baseweb="select"],
     .stTextInput, .stNumberInput, .stDateInput, .stMultiSelect,
@@ -31,12 +31,12 @@ def set_page_background(image_path: str):
         backdrop-filter: blur(0.5px);
     }}
     .stDataFrame table, .stDataFrame th, .stDataFrame td {{
-        color: #0b1320 !important;
+        color: #ddd !important;
         background-color: rgba(255,255,255,0.0) !important;
     }}
     .stButton > button, .stDownloadButton > button, .stLinkButton > a {{
         background-color: #ffffff !important;
-        color: #0b1320 !important;
+        color: #ddd !important;
         border: 1px solid #cbd5e1 !important;
         border-radius: 8px;
     }}
