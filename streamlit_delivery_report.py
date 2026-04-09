@@ -210,7 +210,7 @@ for col in ["Resa FTTH", "Resa ≠ FTTH"]:
 
 st.dataframe(
     df_mensile.style
-    .applymap(
+    .map(
         lambda v: "background-color: #ccffcc" if pd.notna(v) and v >= 70
         else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""),
         subset=["Resa FTTH", "Resa ≠ FTTH"]
