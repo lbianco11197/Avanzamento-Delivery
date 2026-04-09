@@ -136,7 +136,6 @@ def calcola_riepilogo(gruppo):
 file_path = "delivery.xlsx"
 df = load_data()
 st.markdown(f"🗓️ **Dati aggiornati al:** {df['Data'].max().strftime('%d/%m/%Y')}")
-
 # --- Sidebar Filtri ---
 ordine_mesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
                "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
