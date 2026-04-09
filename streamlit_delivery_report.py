@@ -188,7 +188,7 @@ for col in ["Impianti gestiti FTTH", "Impianti espletati FTTH", "Impianti gestit
 for col in ["Resa FTTH", "Resa ≠ FTTH"]:
     df_giornaliero[col] = df_giornaliero[col].round(0).astype("Int64")
 
-#st.dataframe(
+st.dataframe(
     df_giornaliero.style
     .applymap(
         lambda v: "background-color: #ccffcc" if pd.notna(v) and v >= 70
