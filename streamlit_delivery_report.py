@@ -197,7 +197,7 @@ st.dataframe(
     )
     .format({"Resa FTTH": "{:.0f}%", "Resa ≠ FTTH": "{:.0f}%"})  # ⬅️ aggiunto
     .hide(axis="index"),
-    use_container_width=True
+    use_container_width=True)
 )
 
 # --- Andamento Mensile ---
