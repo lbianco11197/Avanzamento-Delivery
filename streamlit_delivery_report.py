@@ -23,8 +23,7 @@ def set_page_background(image_path: str):
     html, body, [data-testid="stApp"] {{
         color: #0b1320 !important;
     }}
-    .stDataFrame, .stTable, .stSelectbox div[data-baseweb="select"],
-    .stTextInput, .stNumberInput, .stDateInput, .stMultiSelect,
+    .stDataFrame, .stTable, .stSelectbox div[data-baseweb="select"].stTextInput, .stNumberInput, .stDateInput, .stMultiSelect,
     .stRadio, .stCheckbox, .stSlider, .stFileUploader, .stTextArea {{
         background-color: rgba(255,255,255,0.88) !important;
         border-radius: 10px;
@@ -89,8 +88,7 @@ def load_data():
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
     df = pulisci_tecnici(df)
 
-    
-     # Normalizza i nomi tecnici:
+    # Normalizza i nomi tecnici:
     df["Tecnico"] = (
         df["Tecnico"]
         .astype(str)                      # forza a stringa
@@ -135,7 +133,7 @@ def calcola_riepilogo(gruppo):
 # --- Avvia app ---
 file_path = "delivery.xlsx"
 df = load_data()
-st.markdown(f"🗓️ **Dati aggiornati al:** {df['Data'].max().strftime('%d/%m/%Y')}")
+st.markdown(f"🗓️ **Dati aggiornati al:** {{df['Data'].max().strftime('%d/%m/%Y')}}")
 
 # --- Sidebar Filtri ---
 ordine_mesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
@@ -159,10 +157,8 @@ giorno_sel = riga1_col2.selectbox("📆 Seleziona un giorno", giorni)
 reparto = riga2_col1.selectbox("🧑‍🔧 Seleziona un reparto", reparti)
 tecnico = riga2_col2.selectbox("🧑‍🔧 Seleziona un tecnico", tecnici)
 
-
 # Filtro iniziale per selezionare i giorni del mese corrente
 df_filtrato_temp = df[df["MeseNome"] == tmese] if tmese != "Tutti" else df
-
 
 # --- Applica filtri ---
 df_filtrato = df.copy()
@@ -195,11 +191,9 @@ st.dataframe(
         else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""),
         subset=["Resa FTTH", "Resa ≠ FTTH"]
     )
-    .format({"Resa FTTH": "{:.0f}%", "Resa ≠ FTTH": "{:.0f}%"})  # ⬅️ aggiunto
-    .hide(axis="index")
-    use_container_width=True
+    .format({"Resa FTTH": "{:.0f}SM", "Resa ≠ FTTH": "{:.0f}SM"})
+    .hide(axis="index", use_container_width=True),
 )
-
 
 # --- Andamento Mensile ---
 st.subheader("📆 Riepilogo Mensile per Tecnico")
@@ -216,7 +210,6 @@ st.dataframe(
         else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""),
         subset=["Resa FTTH", "Resa ≠ FTTH"]
     )
-    .format({"Resa FTTH": "{:.0f}%", "Resa ≠ FTTH": "{:.0f}%"})  # ⬅️ aggiunto
-    .hide(axis="index"),
-    use_container_width=True
+    .format({"Resa FTTH": "{:.0f}SM", "Resa ≠ FTTH": "{:.0f}SM"})
+    .hide(axis="index", use_container_width=True),
 )
