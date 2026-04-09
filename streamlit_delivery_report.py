@@ -196,8 +196,9 @@ st.dataframe(
         subset=["Resa FTTH", "Resa ≠ FTTH"]
     )
     .format({"Resa FTTH": "{:.0f}%", "Resa ≠ FTTH": "{:.0f}%"})  # ⬅️ aggiunto
-    .hide(axis="index"),
+    .hide(axis="index")
     use_container_width=True
+)
 
 
 # --- Andamento Mensile ---
