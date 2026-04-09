@@ -195,8 +195,8 @@ st.dataframe(
         else ("background-color: #ff9999" if pd.notna(v) and v < 70 else ""),
         subset=["Resa FTTH", "Resa ≠ FTTH"]
     )
-    .format({"Resa FTTH": "{:.0f}%", "Resa ≠ FTTH": "{:.0f}%"})  # ⬅️ aggiunto
-    .hide(axis="index"),
+    .format({"Resa FTTH": "{:.0f}%", "Resa ≠ FTTH": "{:.0f}%"})
+    .hide(axis="index"),   # 👈 qui finisce il primo argomento
     use_container_width=True
 )
 
