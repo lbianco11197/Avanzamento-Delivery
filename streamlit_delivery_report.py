@@ -104,24 +104,32 @@ def load_data():
 
 def load_resa_data():
     df = pd.read_excel("resa.xlsx", usecols=[
-        "Data Esec. Lavoro", "Tipo Impianto", "Causale Chiusura", "Reparto"
+        "Data Inizio Appuntamento", "Tipo Impianto", "Causale Chiusura", "Reparto"
     ])
 
     df.rename(columns={
-        "Data Esec. Lavoro": "Data",
+        "Data Inizio Appuntamento": "Data",
         "Tipo Impianto": "TipoImpianto",
         "Causale Chiusura": "Causale",
         "Reparto": "Reparto"
     }, inplace=True)
 
+    # parsing data + ORA → teniamo solo la data
     df["Data"] = pd.to_datetime(df["Data"], dayfirst=True, errors="coerce")
     df.dropna(subset=["Data"], inplace=True)
+    df["Data"] = df["Data"].dt.normalize()  # 👉 rimuove l'ora
 
+    # filtro reparto corretto
     df["Reparto"] = df["Reparto"].astype(str).str.strip()
     df = df[df["Reparto"] == "400340"]
 
+    # normalizzazione
     df["TipoImpianto"] = df["TipoImpianto"].astype(str).str.strip().str.upper()
+
+    # ⚠️ QUI LA CORREZIONE IMPORTANTE
+    # NON trasformiamo in stringa vuota → lasciamo i NaN
     df["Causale"] = df["Causale"].astype(str).str.strip().str.upper()
+    df["Causale"] = df["Causale"].replace("NAN", pd.NA)
 
     df["DataStr"] = df["Data"].dt.strftime("%d/%m/%Y")
     df["Mese"] = df["Data"].dt.month
