@@ -104,7 +104,7 @@ def load_data():
 
 def load_resa_data():
     df = pd.read_excel("resa.xlsx", usecols=[
-        "Data Inizio Appuntamento", "Tipo Impianto", "Causale Chiusura", "Reparto"
+        "Data Inizio Appuntamento", "Tipo Impianto", "Causale Chiusura", "Reparto","Stato"
     ])
 
     df.rename(columns={
@@ -112,6 +112,7 @@ def load_resa_data():
         "Tipo Impianto": "TipoImpianto",
         "Causale Chiusura": "Causale",
         "Reparto": "Reparto"
+        "Stato": "Stato"
     }, inplace=True)
 
     # parsing data + ORA → teniamo solo la data
@@ -122,6 +123,10 @@ def load_resa_data():
     # filtro reparto corretto
     df["Reparto"] = df["Reparto"].astype(str).str.strip()
     df = df[df["Reparto"] == "400340"]
+
+    # filtro stato diverso da 50
+    df["Stato"] = df["Stato"].astype(str).str.strip()
+    df = df[df["Stato"] != "50 - Annullata"]
 
     # normalizzazione
     df["TipoImpianto"] = df["TipoImpianto"].astype(str).str.strip().str.upper()
