@@ -112,7 +112,6 @@ def load_resa_data():
         "Tipo Impianto": "TipoImpianto",
         "Causale Chiusura": "Causale",
         "Reparto": "Reparto"
-        "Stato": "Stato"
     }, inplace=True)
 
     # parsing data + ORA → teniamo solo la data
