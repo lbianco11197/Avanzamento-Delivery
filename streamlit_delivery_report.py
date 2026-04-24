@@ -124,8 +124,8 @@ def load_resa_data():
     df = df[df["Reparto"] == "400340"]
 
     # filtro stato diverso da 50
-    df["Stato"] = df["Stato"].astype(str).str.strip()
-    df = df[df["Stato"] != "50 - Annullata"]
+    #df["Stato"] = df["Stato"].astype(str).str.strip()
+    #df = df[df["Stato"] != "50 - Annullata"]
 
     # normalizzazione
     df["TipoImpianto"] = df["TipoImpianto"].astype(str).str.strip().str.upper()
