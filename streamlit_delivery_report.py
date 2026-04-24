@@ -195,7 +195,7 @@ def calcola_tabella_resa(df, tipo_label):
 def colore_resa(v):
     if pd.isna(v):
         return ""
-    if v > 65:
+    if v > 64:
         return "background-color: #ccffcc"
     elif v >= 55:
         return "background-color: #fff3b0"
